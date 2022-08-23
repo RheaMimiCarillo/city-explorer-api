@@ -73,24 +73,26 @@ app.get('/', (request, response) => {
 app.use(cors());
 app.get('/sayHello', (request, response) =>
 {
-  try {
-    // the console shows the
-    console.log(request.query.name);
-    // get name from request query key/value pair
-    let name = request.query.name;
+  // try {
+  //   // the console shows the
+  //   console.log(request.query.name);
+  //   // get name from request query key/value pair
+  //   let name = request.query.name;
 
-    let lastName = request.query.lastName;
+  //   let lastName = request.query.lastName;
 
-    let fullName = name + '' + lastName;
+  //   let fullName = name + '' + lastName;
 
-    // let human = new Person();
-    // console.log(fullName);
-// response.send('Hello');
-  } catch (error){
+  //   // let human = new Person();
+  //   // console.log(fullName);
+  //   // response.send('Hello');
+  // }
+  // catch (error){
 
-  } next {
+  // }
+  // next {
 
-  }
+  // }
 
 
 });
