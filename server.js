@@ -37,7 +37,10 @@ console.log('poopoo');
   app.get('/')
 
   ERRORS:
-
+  app.use((error, request, response, next) =>
+  {
+    response.status(500).send(error.message);
+  });
 
   LISTEN:
   - an express method:
@@ -53,6 +56,10 @@ require('dotenv').config();
 
 const app = express();
 
+const cors = require('cors');
+
+let data = require('./data/weather.json');
+
 // bring in json data and require it
 
 // try the port in the env, but try 3002 if it doesn't
@@ -63,21 +70,29 @@ const PORT = process.env.PORT || 3002;
 app.get('/', (request, response) => {
   response.send('Hello from our server!');
 });
-
-app.get('/sayHello', (request,response) =>
+app.use(cors());
+app.get('/sayHello', (request, response) =>
 {
-  // the console shows the
-  console.log(request.query.name);
-  // get name from request query key/value pair
-  let name = request.query.name;
+  try {
+    // the console shows the
+    console.log(request.query.name);
+    // get name from request query key/value pair
+    let name = request.query.name;
 
-  let lastName = request.query.lastName;
+    let lastName = request.query.lastName;
 
-  let fullName = name + '' + lastName;
+    let fullName = name + '' + lastName;
 
-  // let human = new Person();
-  // console.log(fullName);
-  // response.send('Hello');
+    // let human = new Person();
+    // console.log(fullName);
+// response.send('Hello');
+  } catch (error){
+
+  } next {
+
+  }
+
+
 });
 
 // catch all "star" route
@@ -100,3 +115,7 @@ class Person {
   }
 
 }
+app.use((error, request, response, next) =>
+{
+  response.status(500).send(error.message);
+});
