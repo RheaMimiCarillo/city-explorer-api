@@ -51,15 +51,16 @@ console.log('meow');
 */
 
 // REQUIRE
-const express = require('express');
-
 require('dotenv').config();
-
+const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
+const { request } = require('express');
 
+/*
 // bring in json data and require it
 let data = require('./data/weather.json');
-
+*/
 
 // USE
 
@@ -74,7 +75,7 @@ const PORT = process.env.PORT || 3002;
 
 // the '/' means to start at the end of our 'base url'
 app.get('/', (request, response) => {
-  response.send('Hello from our server!');
+  response.status(200).send('Meow-mix, Meow-mix, pls deliver!');
 });
 
 // from the /weather endpoint, get the key/value pairs from the search query
@@ -82,7 +83,7 @@ app.get('/', (request, response) => {
 // make a new Forecast object for each day of weather data for that locations
 // put those Forecast objects into an array
 // send the full array of Forecast object back to the original client
-app.get('/weather', (request, response, next) =>
+app.get('/weather', async (request, response, next) =>
 {
   try
   {
@@ -93,11 +94,27 @@ app.get('/weather', (request, response, next) =>
     // get the value city name from search query
     let searchQuery = request.query.searchQuery;
 
-    // find a weather object from the weather.json that matches the name of the city the user types in
-    let weatherObj = data.find(weather =>
-      weather.city_name.toLowerCase() === searchQuery.toLowerCase());
+    // get today's date in YYYY-MM-DD format
+    let currentDate = getDate(0);
 
-    console.log('raw weather data',weatherObj);
+
+    // get date 5 days from today in YYYY-MM-DD format
+    let endDate = getDate(5);
+
+    let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&lat=${lat}&lon=${lon}&start_date=${currentDate}&end_date=${endDate}`;
+
+    console.log(url);
+
+    // use `url` to get the weather data from the the Weather api
+    let weatherResults = await axios.get(url);
+
+    console.log('weather api axios request: ', weatherResults);
+
+    // find a weather object from the weather API json that matches the lat and the lon from LocationIQ
+    let weatherObj = weatherResults.data.find(city =>
+      city.lat === lat && city.lon === lon);
+
+    console.log('weatherObj raw data', weatherObj);
 
     // turn weatherObj into an array of Forecast objects
     let forecastArray = weatherObj.data.map(dailyData => new Forecast(dailyData));
@@ -108,8 +125,6 @@ app.get('/weather', (request, response, next) =>
     // send the Forecast object array back to front-end
     // in the front end, the user can set the Forecast data into state for later use
     response.send(forecastArray);
-
-
   }
   catch(error)
   {
@@ -117,7 +132,27 @@ app.get('/weather', (request, response, next) =>
     next(error);
   }
 });
-/* LAB 08
+
+// got help here https://stackoverflow.com/a/20329800
+const getDate = daysFromToday =>
+{
+  let currentDate = new Date();
+
+  let futureDate = new Date(currentDate.getTime() - (daysFromToday * 24 * 60 * 60 * 1000));
+
+  let day =futureDate.getDate();
+  let month=futureDate.getMonth()+1;
+  let year=futureDate.getFullYear();
+
+
+  // got help changing date to two decimals: https://bobbyhadz.com/blog/javascript-change-getdate-to-2-digits#:~:text=To%20change%20the%20getDate(),the%20start%20of%20the%20string.
+  day = day <= 9 ? '0' + day : day;
+
+  console.log('year, month, day: ',year,month,day);
+
+  return `${year}-${month}-${day}`;
+};
+/*
 // handle getting weather from api
 // make axios request using URL and save the returned data into state
 const handleWeatherApiRequest((lat, lon) =>
@@ -129,24 +164,32 @@ const handleWeatherApiRequest((lat, lon) =>
   // return the array of Forecast objects
   return '';
 });
-
-// handle making an array of movie objects from a certain city
-const handleMoviesRequest(cityName =>
-{
-  // make a `url` to use to make a GET request
-  // use the `url` to do a GET from the weather api using axios
-  // access the data from .data (axios) to get the raw data
-  // use a map loop or sm to make an array of Movie objects
-  // return the array of Movie objects
-  return '';
-});
 */
+// handle making an array of movie objects from a certain city
+// const handleMoviesRequest(cityName =>
+// {
+//   // make a `url` to use to make a GET request
+//   // use the `url` to do a GET from the weather api using axios
+//   // access the data from .data (axios) to get the raw data
+//   // use a map loop or sm to make an array of Movie objects
+//   // return the array of Movie objects
+//   return '';
+// });
+
 
 // get movie data from movie db using axios
 // return an array of movies that contain the name of the city (using regex) | title= regex cityName or something
 app.get('/movies', (request, response, next) =>
 {
-
+  try
+  {
+    response.send('You want movies?');
+  }
+  catch (error)
+  {
+    console.log('error message: ', error.message);
+    next(error);
+  }
 });
 
 
@@ -155,16 +198,9 @@ app.get('/movies', (request, response, next) =>
 // catch all| "star" route
 // the star is a wildcard that 'catches all' other routes
 // when a user enters an invalid route
-app.get('*', (request, response) => {
-  response.send('You\'re fired, Mr. Squidward.');
-});
-
-// ERRORS
-// handle errors that I can define
-
-app.use((error, request, response, next) =>
+app.get('*', (request, response) =>
 {
-  response.status(500).send(error.message);
+  response.status(404).send('Something about Kansas');
 });
 
 // CLASSES
@@ -178,15 +214,24 @@ class Forecast {
   }
 }
 
-class Movies {
-  constructor(cityObj)
-  {
-    // fill in this data from the properties of the movie database
-    this.src = '';
-    this.alt = '';
-    this.director = '';
-  }
-}
+// class Movies {
+//   constructor(cityObj)
+//   {
+//     // fill in this data from the properties of the movie database
+//     this.src = '';
+//     this.alt = '';
+//     this.director = '';
+//   }
+// }
+
+// ERRORS
+// handle errors that I can define
+
+app.use((error, request, response, next) =>
+{
+  console.log(error.message);
+  response.status(500).send(`You're fired, Mr. Squidward: `, error.message);
+});
 
 
 // LISTEN
