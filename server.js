@@ -117,7 +117,7 @@ app.get('/weather', (request, response, next) =>
     next(error);
   }
 });
-/*
+/* LAB 08
 // handle getting weather from api
 // make axios request using URL and save the returned data into state
 const handleWeatherApiRequest((lat, lon) =>
@@ -141,6 +141,17 @@ const handleMoviesRequest(cityName =>
   return '';
 });
 */
+
+// get movie data from movie db using axios
+// return an array of movies that contain the name of the city (using regex) | title= regex cityName or something
+app.get('/movies', (request, response, next) =>
+{
+
+});
+
+
+
+
 // catch all| "star" route
 // the star is a wildcard that 'catches all' other routes
 // when a user enters an invalid route
