@@ -2,7 +2,7 @@
 // we need use strict in the backend
 'use strict';
 
-console.log('poopoo');
+console.log('meow');
 
 // add scaffolding to see what we need to do:
 /*
@@ -50,74 +50,104 @@ console.log('poopoo');
     -listening for 'hits' on its 'routes'
 */
 
+// REQUIRE
 const express = require('express');
 
 require('dotenv').config();
 
-const app = express();
-
 const cors = require('cors');
 
+// bring in json data and require it
 let data = require('./data/weather.json');
 
-// bring in json data and require it
 
-// try the port in the env, but try 3002 if it doesn't
-// if the server is working on 3002, then I know something is wrong in the .env file or how I'm importing the values
+// USE
+
+const app = express();
+
+app.use(cors());
+
+// try the port variable in the .env, but try 3002 if it doesn't
+// if the server is running on 3002, then I know something is wrong in the .env file or how I'm importing the values
 const PORT = process.env.PORT || 3002;
+
 
 // the '/' means to start at the end of our 'base url'
 app.get('/', (request, response) => {
   response.send('Hello from our server!');
 });
-app.use(cors());
-app.get('/sayHello', (request, response) =>
+
+// from the /weather endpoint, get the key/value pairs from the search query
+// check the which city from the lat lon and searchQuery
+// make a new Forecast object for each day of weather data for that locations
+// put those Forecast objects into an array
+// send the full array of Forecast object back to the original client
+app.get('/weather', (request, response, next) =>
 {
-  // try {
-  //   // the console shows the
-  //   console.log(request.query.name);
-  //   // get name from request query key/value pair
-  //   let name = request.query.name;
+  try
+  {
+    // get latitude from search query
+    let lat = request.query.lat;
+    // get longitude from search query
+    let lon = request.query.lon;
+    // get the value city name from search query
+    let searchQuery = request.query.searchQuery;
 
-  //   let lastName = request.query.lastName;
+    // find a weather object from the weather.json that matches the name of the city the user types in
+    let weatherObj = data.find(weather =>
+      weather.city_name.toLowerCase() === searchQuery.toLowerCase());
 
-  //   let fullName = name + '' + lastName;
+    console.log('raw weather data',weatherObj);
 
-  //   // let human = new Person();
-  //   // console.log(fullName);
-  //   // response.send('Hello');
-  // }
-  // catch (error){
-
-  // }
-  // next {
-
-  // }
+    // turn weatherObj into an array of Forecast objects
+    let forecastArray = weatherObj.data.map(dailyData => new Forecast(dailyData));
 
 
+    console.log('forecastArray ', forecastArray);
+
+    // send the Forecast object array back to front-end
+    // in the front end, the user can set the Forecast data into state for later use
+    response.send(forecastArray);
+
+
+  }
+  catch(error)
+  {
+    console.log('error message: ', error.message);
+    next(err);
+  }
 });
 
-// catch all "star" route
+
+// catch all| "star" route
 // the star is a wildcard that 'catches all' other routes
+// when a user enters an invalid route
 app.get('*', (request, response) => {
   response.send('You\'re fired, Mr. Squidward.');
 });
 
-app.listen(PORT, ()  => console.log(`listening on port ${PORT}`));
+// ERRORS
+// handle errors that I can define
 
-
-// CLASSES
-
-// making Pet objects from user input
-class Person {
-  constructor(personObj){
-    this.name = person.name;
-    this.lastName = person.lastName;
-
-  }
-
-}
 app.use((error, request, response, next) =>
 {
   response.status(500).send(error.message);
 });
+
+// CLASSES
+
+// making Forecast objects from user input
+class Forecast {
+  constructor(weatherObj)
+  {
+    this.date = weatherObj.datetime;
+    this.description = weatherObj.weather.description;
+  }
+}
+
+
+
+// LISTEN
+// start the server
+// express has a `listen` method that takes in a `PORT` and a callback function as arguments
+app.listen(PORT, () => console.log(`listening on port ${PORT}`));
