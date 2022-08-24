@@ -114,11 +114,33 @@ app.get('/weather', (request, response, next) =>
   catch(error)
   {
     console.log('error message: ', error.message);
-    next(err);
+    next(error);
   }
 });
+/*
+// handle getting weather from api
+// make axios request using URL and save the returned data into state
+const handleWeatherApiRequest((lat, lon) =>
+{
+  // make a `url` to use to make a GET request
+  // use the `url` to do a GET from the weather api using axios
+  // access the data from .data (axios) to get the raw data
+  // use a map loop or sm to make an array of Forecast objects
+  // return the array of Forecast objects
+  return '';
+});
 
-
+// handle making an array of movie objects from a certain city
+const handleMoviesRequest(cityName =>
+{
+  // make a `url` to use to make a GET request
+  // use the `url` to do a GET from the weather api using axios
+  // access the data from .data (axios) to get the raw data
+  // use a map loop or sm to make an array of Movie objects
+  // return the array of Movie objects
+  return '';
+});
+*/
 // catch all| "star" route
 // the star is a wildcard that 'catches all' other routes
 // when a user enters an invalid route
@@ -145,6 +167,15 @@ class Forecast {
   }
 }
 
+class Movies {
+  constructor(cityObj)
+  {
+    // fill in this data from the properties of the movie database
+    this.src = '';
+    this.alt = '';
+    this.director = '';
+  }
+}
 
 
 // LISTEN
