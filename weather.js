@@ -4,11 +4,15 @@ const axios = require('axios');
 // CLASSES
 
 // making Forecast objects from user input
-class Forecast {
+class Forecast
+{
   constructor(weatherObj)
   {
     this.date = weatherObj.datetime;
     this.description = weatherObj.weather.description;
+
+    // round temperature to nearest, whole number
+    this.maxTemp = Math.round(weatherObj.high_temp);
   }
 }
 
@@ -75,9 +79,9 @@ async function getWeather (request, response, next)
   }
   catch(error)
   {
-    Promise.resolve().then(() => {
-      throw new Error(error.message);
-    }).catch(next);
+    console.log('error message: ', error.message);
+    // response.send('You want movies?');
+    next(error);
   }
 }
 
@@ -105,6 +109,20 @@ const getDate = daysFromToday =>
 };
 
 
+/*
+// handle getting weather from api
+// make axios request using URL and save the returned data into state
+const handleWeatherApiRequest((lat, lon) =>
+{
+  // make a `url` to use to make a GET request
+  // use the `url` to do a GET from the weather api using axios
+  // access the data from .data (axios) to get the raw data
+  // use a map loop or sm to make an array of Forecast objects
+  // return the array of Forecast objects
+  return '';
+});
+*/
+
 
 // syntax to export just a function
-module.export = getWeather;
+module.exports = getWeather;

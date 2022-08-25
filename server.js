@@ -8,8 +8,8 @@ console.log('meow');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const getWeather = require('./weather.js');
+const getMovies = require('./movies.js');
 
 /*
 // bring in json data and require it
@@ -103,108 +103,69 @@ app.get('/weather', getWeather);
 
 // I just realized I don't actually need this part.... ;-;
 
-/*
-// handle getting weather from api
-// make axios request using URL and save the returned data into state
-const handleWeatherApiRequest((lat, lon) =>
-{
-  // make a `url` to use to make a GET request
-  // use the `url` to do a GET from the weather api using axios
-  // access the data from .data (axios) to get the raw data
-  // use a map loop or sm to make an array of Forecast objects
-  // return the array of Forecast objects
-  return '';
-});
-*/
-/*
-// handle making an array of movie objects from a certain city
-const handleMoviesRequest (url =>
-{
 
-  try
-  {
-    let movieResults = await axios.get(url);
-    return movieResults;
-  }
-  catch(error)
-  {
 
-  }
-});
-*/
 
 // get movie data from movie db using axios
 // return an array of movies that contain the name of the city (using regex) | title= regex cityName or something
 
-app.get('/movies', async (request, response, next) =>
-{
-  try
-  {
-    let cityName = request.query.city;
-    console.log('city from /movies request: ', cityName);
+// app.get('/movies', async (request, response, next) =>
+// {
+//   try
+//   {
+//     let cityName = request.query.city;
+//     console.log('city from /movies request: ', cityName);
 
-    // make a `url` to use to make a GET request
-    let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
+//     // make a `url` to use to make a GET request
+//     let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
 
-    console.log('movieUrl: ', url);
+//     console.log('movieUrl: ', url);
 
-    // use the `url` to do a GET from the weather api using axios
-    let movieResults = await axios.get(url);
-    console.log('raw api movie results: ', movieResults);
+//     // use the `url` to do a GET from the weather api using axios
+//     let movieResults = await axios.get(url);
+//     console.log('raw api movie results: ', movieResults);
 
 
-    console.log('movieResults.results: ', movieResults.data.results);
-    // access the data from .results (axios) to get the raw data
-    // if the city has any movies with it's name in the title
+//     console.log('movieResults.results: ', movieResults.data.results);
+//     // access the data from .results (axios) to get the raw data
+//     // if the city has any movies with it's name in the title
 
-    // make an empty array to store potential Movie objects
-    let movieArray = [];
-    if (movieResults.data.results.length)
-    {
-      movieResults.data.results.forEach(movie => movieArray.push(new Movies(movie)));
-    }
+//     // make an empty array to store potential Movie objects
+//     let movieArray = [];
+//     if (movieResults.data.results.length)
+//     {
+//       movieResults.data.results.forEach(movie => movieArray.push(new Movies(movie)));
+//     }
 
-    console.log(movieArray);
+//     console.log(movieArray);
 
-    response.status(200).send(movieArray);
-    // use a map loop or sm to make an array of Movie objects
-    // return the array of Movie objects
-  }
-  catch (error)
-  {
-    console.log('error message: ', error.message);
-    // response.send('You want movies?');
-    next(error);
-  }
-});
-
+//     response.status(200).send(movieArray);
+//     // use a map loop or sm to make an array of Movie objects
+//     // return the array of Movie objects
+//   }
+//   catch (error)
+//   {
+//     console.log('error message: ', error.message);
+//     // response.send('You want movies?');
+//     next(error);
+//   }
+// });
 
 
 
 // catch all| "star" route
 // the star is a wildcard that 'catches all' other routes
 // when a user enters an invalid route
+
+
+app.get('/movies', getMovies);
+
+
 app.get('*', (request, response) =>
 {
   response.status(404).send('Something about Kansas');
 });
 
-// CLASSES
-
-class Movies
-{
-  constructor(movieData)
-  {
-    // fill in this data from the properties of the movie database
-    this.title = movieData.title;
-    this.releaseDate = movieData.release_date;
-    this.language = movieData.original_language;
-    this.overview = movieData.overview;
-    this.src = movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : '';
-    this.score = movieData.vote_average;
-    this.id= movieData.id;
-  }
-}
 
 // ERRORS
 // handle errors that I can define
