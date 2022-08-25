@@ -59,23 +59,4 @@ async function getMovies(request,response,next)
   }
 }
 
-
-/*
-// handle making an array of movie objects from a certain city
-const handleMoviesRequest (url =>
-{
-
-  try
-  {
-    let movieResults = await axios.get(url);
-    return movieResults;
-  }
-  catch(error)
-  {
-
-  }
-});
-*/
-
-
 module.exports = getMovies;
