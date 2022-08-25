@@ -44,23 +44,13 @@ async function getWeather (request, response, next)
     // use `url` to get the weather data from the the Weather api
     let weatherResults = await axios.get(url);
 
-    // chaining (not required for lab 09)
-    // axios.get(url, {param})
-    // .then(weatherResults) => ('hi'/*callback to make an array of 5 weather forecasts*/)
-    // .catch(err => console.error(err));
-    // console.log('weather api axios request: ', weatherResults);
-
-    // find a weather object from the weather API json that matches the lat and the lon from LocationIQ
-    // let weatherObj = weatherResults.data.find(city =>
-    //   city.lat === lat && city.lon === lon);
 
     let weatherObj = weatherResults.data;
 
     console.log('just weatherObj raw data', weatherObj);
-    // weatherObj.data.map(dailyData => new Forecast(dailyData));
 
 
-    // turn weatherObj into an array of Forecast objects
+    // turn weatherObj into an array of 5 Forecast objects
     let forecastArray = [];
     // get only the first 5 days of the forecast
     for(let i = 0; i < 5; i++)
@@ -86,6 +76,7 @@ async function getWeather (request, response, next)
 }
 
 
+// get the date, 5 days from today
 const getDate = daysFromToday =>
 {
   // got help here https://stackoverflow.com/a/20329800
@@ -107,21 +98,6 @@ const getDate = daysFromToday =>
 
   return `${year}-${month}-${day}`;
 };
-
-
-/*
-// handle getting weather from api
-// make axios request using URL and save the returned data into state
-const handleWeatherApiRequest((lat, lon) =>
-{
-  // make a `url` to use to make a GET request
-  // use the `url` to do a GET from the weather api using axios
-  // access the data from .data (axios) to get the raw data
-  // use a map loop or sm to make an array of Forecast objects
-  // return the array of Forecast objects
-  return '';
-});
-*/
 
 
 // syntax to export just a function
