@@ -200,43 +200,38 @@ const handleMoviesRequest (url =>
 
 // get movie data from movie db using axios
 // return an array of movies that contain the name of the city (using regex) | title= regex cityName or something
+
 app.get('/movies', async (request, response, next) =>
 {
   try
   {
+    let cityName = request.query.city;
+    console.log('city from /movies request: ', cityName);
+
     // make a `url` to use to make a GET request
     let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
 
+    console.log('movieUrl: ', url);
 
     // use the `url` to do a GET from the weather api using axios
     let movieResults = await axios.get(url);
     console.log('raw api movie results: ', movieResults);
 
 
-    console.log('movieResults.results: ', movieResults.results);
+    console.log('movieResults.results: ', movieResults.data.results);
     // access the data from .results (axios) to get the raw data
     // if the city has any movies with it's name in the title
-    if (movieResults)
+
+    // make an empty array to store potential Movie objects
+    let movieArray = [];
+    if (movieResults.data.results.length)
     {
-      let movieArray = [];
-      let movieCount = 0;
-      // if the movieArray has less than 20 movies, or the movieArray has as many items as the MovieDB results (city has less than 20 movies)
-      while(movieArray < 20 || movieArray.length === movieResults.results.length)
-      {
-        as;dfkjl; change this to a normal for loop, so I can get a count of stuff, lmao
-        let movieArray = movieResults.results.forEach(movie =>
-        {
-          movieArray.push(new Movies(movie));
-          movieCount++;
-        });
-        // for(let i = 0; i < movieResults.results.length; i++)
-        // {
-        //   // movieArray.push(new Movies(movieResults.results));
-        // }
-        return movieArray;
-      }
+      movieResults.data.results.forEach(movie => movieArray.push(new Movies(movie)));
     }
 
+    console.log(movieArray);
+
+    response.status(200).send(movieArray);
     // use a map loop or sm to make an array of Movie objects
     // return the array of Movie objects
   }
@@ -276,8 +271,8 @@ class Movies
   {
     // fill in this data from the properties of the movie database
     this.title = movieData.title;
-    this.releaseDate = movieData.releaseDate;
-    this.language = movieData.results.original_language;
+    this.releaseDate = movieData.release_date;
+    this.language = movieData.original_language;
     this.overview = movieData.overview;
     this.src = `https://image.tmdb.org/t/p/w500${movieData.poster_path}`;
     this.score = movieData.vote_average;
