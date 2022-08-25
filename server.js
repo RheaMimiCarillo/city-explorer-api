@@ -274,8 +274,9 @@ class Movies
     this.releaseDate = movieData.release_date;
     this.language = movieData.original_language;
     this.overview = movieData.overview;
-    this.src = `https://image.tmdb.org/t/p/w500${movieData.poster_path}`;
+    this.src = movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : '';
     this.score = movieData.vote_average;
+    this.id= movieData.id;
   }
 }
 
