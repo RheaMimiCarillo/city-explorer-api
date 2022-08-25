@@ -67,6 +67,7 @@ Finish time: _____
 
 Actual time needed to complete: _____
 
+### Lab 08
 
 Name of feature: Weather (live)
 
@@ -109,3 +110,30 @@ Start time: _____
 Finish time: _____
 
 Actual time needed to complete: _____
+
+
+### Lab 09
+
+Name of feature: 1. Refactor: Modularize the back-end codebase.
+
+Estimate of time needed to complete: 2 hours
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+2. Refactor: Componentize the front-end codebase.
+
+Name of feature: 2. Refactor: Componentize the front-end codebase.
+
+Estimate of time needed to complete: 2 hours
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+![Lab 09 WRRC (Worked with Brook Heck)](./images/lab_09_WRRC.png?raw=true "Lab 09 WRRC")

@@ -17,11 +17,11 @@ async function getWeather (request, response, next)
 {
   try
   {
-    let param = {
-      key: process.env.WEATHER_API_KEY,
-      lat: request.query.lat,
-      lon: request.query.lon
-    };
+    // let param = {
+    //   key: process.env.WEATHER_API_KEY,
+    //   lat: request.query.lat,
+    //   lon: request.query.lon
+    // };
     // get latitude from search query
     let lat = request.query.lat;
     // get longitude from search query

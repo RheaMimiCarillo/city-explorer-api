@@ -4,52 +4,6 @@
 
 console.log('meow');
 
-// add scaffolding to see what we need to do:
-/*
-  REQUIRE
-  in our servers, we have to use 'require' instead of 'import'.
-  Server Requirements:
-
-  // to create a server, we bring in express:
-  const express = require('express');
-
-  // Bring in our .env file
-  // use this after running npm i dotenv
-  require('dotenv').config();
-
-  USE:
-  if something is 'REQUIRE'd, we must use it
-  here' we'll assign the required file to a variable
-  (react does this in one step, Express takes two):
-  const app = express();
-
-  // our "canary in the coalmine"
-  const PORT = process.env.PORT || 3002;
-
-  Define PORT value and validate it's working
-
-  ROUTES:
-  access our endpoints
-  // create a basic, default route:
-  app.get correlates to axios.get
-  the first parameter is a 'ur' in quotes
-
-  app.get('/')
-
-  ERRORS:
-  app.use((error, request, response, next) =>
-  {
-    response.status(500).send(error.message);
-  });
-
-  LISTEN:
-  - an express method:
-    - takes in a port value and callback function
-    - call on our instance of express (app, in this case)
-    app.listen(PORT, ()  => console.log(`listening on port ${PORT}`));
-    -listening for 'hits' on its 'routes'
-*/
-
 // REQUIRE
 require('dotenv').config();
 const express = require('express');
