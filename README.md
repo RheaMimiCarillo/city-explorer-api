@@ -21,8 +21,7 @@ Ensure you have an API key for Location IQ.
 
 ## Credit and Collaborations
 
-Worked with Matteus Guerra and Miguel Rodriguez on the WRRC:
-![WRRC for lab 07](./images/lab07-%20wrrc.png)
+
 
 ## Resources
 
@@ -34,6 +33,9 @@ Worked with Matteus Guerra and Miguel Rodriguez on the WRRC:
 ## Time Estimates
 
 ### Lab 07
+
+Worked with Matteus Guerra and Miguel Rodriguez on the WRRC:
+![Lab 07 WRRC](./images/lab07_wrrc.png?raw=true "Lab 07 WRRC")
 
 Name of feature: 1. Set up your server repository.
 
@@ -114,6 +116,8 @@ Actual time needed to complete: _____
 
 ### Lab 09
 
+![Lab 09 WRRC (Worked with Brook Heck)](./images/lab_09_WRRC.png?raw=true "Lab 09 WRRC")
+
 Name of feature: 1. Refactor: Modularize the back-end codebase.
 
 Estimate of time needed to complete: 2 hours
@@ -135,5 +139,3 @@ Start time: _____
 Finish time: _____
 
 Actual time needed to complete: _____
-
-![Lab 09 WRRC (Worked with Brook Heck)](./images/lab_09_WRRC.png?raw=true "Lab 09 WRRC")
