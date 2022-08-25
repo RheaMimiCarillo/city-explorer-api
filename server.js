@@ -92,7 +92,7 @@ app.get('/weather', async (request, response, next) =>
     // get longitude from search query
     let lon = request.query.lon;
     // get the value city name from search query
-    let searchQuery = request.query.searchQuery;
+    let cityName = request.query.searchQuery;
 
     // get today's date in YYYY-MM-DD format
     let currentDate = getDate(0);
@@ -103,7 +103,7 @@ app.get('/weather', async (request, response, next) =>
 
     let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&lat=${lat}&lon=${lon}&start_date=${currentDate}&end_date=${endDate}`;
 
-    console.log(url);
+    console.log('weatherbit url: ',url);
 
     // use `url` to get the weather data from the the Weather api
     let weatherResults = await axios.get(url);
@@ -111,13 +111,26 @@ app.get('/weather', async (request, response, next) =>
     console.log('weather api axios request: ', weatherResults);
 
     // find a weather object from the weather API json that matches the lat and the lon from LocationIQ
-    let weatherObj = weatherResults.data.find(city =>
-      city.lat === lat && city.lon === lon);
+    // let weatherObj = weatherResults.data.find(city =>
+    //   city.lat === lat && city.lon === lon);
 
-    console.log('weatherObj raw data', weatherObj);
+    let weatherObj = weatherResults.data;
+
+    console.log('just weatherObj raw data', weatherObj);
+    // weatherObj.data.map(dailyData => new Forecast(dailyData));
+
 
     // turn weatherObj into an array of Forecast objects
-    let forecastArray = weatherObj.data.map(dailyData => new Forecast(dailyData));
+    let forecastArray = [];
+    // get only the first 5 days of the forecast
+    for(let i = 0; i < 5; i++)
+    {
+
+      let dailyForecast = new Forecast(weatherObj.data[i]);
+      forecastArray.push(dailyForecast);
+      console.log(`forecastArray ${i} loop`, forecastArray);
+    }
+
 
 
     console.log('forecastArray ', forecastArray);
@@ -133,22 +146,25 @@ app.get('/weather', async (request, response, next) =>
   }
 });
 
-// got help here https://stackoverflow.com/a/20329800
+// I just realized I don't actually need this part.... ;-;
 const getDate = daysFromToday =>
 {
+  // got help here https://stackoverflow.com/a/20329800
   let currentDate = new Date();
 
-  let futureDate = new Date(currentDate.getTime() - (daysFromToday * 24 * 60 * 60 * 1000));
+  let futureDate = new Date(currentDate.getTime() + (daysFromToday * 24 * 60 * 60 * 1000));
 
-  let day =futureDate.getDate();
-  let month=futureDate.getMonth()+1;
-  let year=futureDate.getFullYear();
+  let day = futureDate.getDate();
+  // two digit month help: https://stackoverflow.com/a/50769505
+  let month = (futureDate.getMonth() + 1).toString().padStart(2, '0');
+  let year = futureDate.getFullYear();
 
 
   // got help changing date to two decimals: https://bobbyhadz.com/blog/javascript-change-getdate-to-2-digits#:~:text=To%20change%20the%20getDate(),the%20start%20of%20the%20string.
   day = day <= 9 ? '0' + day : day;
 
-  console.log('year, month, day: ',year,month,day);
+
+  console.log('year, month, day: ', `${year}-${month}-${day}`);
 
   return `${year}-${month}-${day}`;
 };
@@ -165,29 +181,69 @@ const handleWeatherApiRequest((lat, lon) =>
   return '';
 });
 */
+/*
 // handle making an array of movie objects from a certain city
-// const handleMoviesRequest(cityName =>
-// {
-//   // make a `url` to use to make a GET request
-//   // use the `url` to do a GET from the weather api using axios
-//   // access the data from .data (axios) to get the raw data
-//   // use a map loop or sm to make an array of Movie objects
-//   // return the array of Movie objects
-//   return '';
-// });
+const handleMoviesRequest (url =>
+{
 
+  try
+  {
+    let movieResults = await axios.get(url);
+    return movieResults;
+  }
+  catch(error)
+  {
+
+  }
+});
+*/
 
 // get movie data from movie db using axios
 // return an array of movies that contain the name of the city (using regex) | title= regex cityName or something
-app.get('/movies', (request, response, next) =>
+app.get('/movies', async (request, response, next) =>
 {
   try
   {
-    response.send('You want movies?');
+    // make a `url` to use to make a GET request
+    let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
+
+
+    // use the `url` to do a GET from the weather api using axios
+    let movieResults = await axios.get(url);
+    console.log('raw api movie results: ', movieResults);
+
+
+    console.log('movieResults.results: ', movieResults.results);
+    // access the data from .results (axios) to get the raw data
+    // if the city has any movies with it's name in the title
+    if (movieResults)
+    {
+      let movieArray = [];
+      let movieCount = 0;
+      // if the movieArray has less than 20 movies, or the movieArray has as many items as the MovieDB results (city has less than 20 movies)
+      while(movieArray < 20 || movieArray.length === movieResults.results.length)
+      {
+        as;dfkjl; change this to a normal for loop, so I can get a count of stuff, lmao
+        let movieArray = movieResults.results.forEach(movie =>
+        {
+          movieArray.push(new Movies(movie));
+          movieCount++;
+        });
+        // for(let i = 0; i < movieResults.results.length; i++)
+        // {
+        //   // movieArray.push(new Movies(movieResults.results));
+        // }
+        return movieArray;
+      }
+    }
+
+    // use a map loop or sm to make an array of Movie objects
+    // return the array of Movie objects
   }
   catch (error)
   {
     console.log('error message: ', error.message);
+    // response.send('You want movies?');
     next(error);
   }
 });
@@ -214,15 +270,19 @@ class Forecast {
   }
 }
 
-// class Movies {
-//   constructor(cityObj)
-//   {
-//     // fill in this data from the properties of the movie database
-//     this.src = '';
-//     this.alt = '';
-//     this.director = '';
-//   }
-// }
+class Movies
+{
+  constructor(movieData)
+  {
+    // fill in this data from the properties of the movie database
+    this.title = movieData.title;
+    this.releaseDate = movieData.releaseDate;
+    this.language = movieData.results.original_language;
+    this.overview = movieData.overview;
+    this.src = `https://image.tmdb.org/t/p/w500${movieData.poster_path}`;
+    this.score = movieData.vote_average;
+  }
+}
 
 // ERRORS
 // handle errors that I can define
