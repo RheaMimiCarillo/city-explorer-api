@@ -1,65 +1,75 @@
+// lab 10
 
-// we need use strict in the backend
 'use strict';
 
-console.log('meow');
+/* REQUIRE */
 
-// REQUIRE
-require('dotenv').config();
+// require the use of a .env file
+require('dotenv').config;
+
+// express.js
 const express = require('express');
+
 const cors = require('cors');
-const getWeather = require('./weather.js');
-const getMovies = require('./movies.js');
 
+// import weather functionality
+const weather = require('./modules/weather.js');
 
+// import movies functionality
+const movies = require('./movies.js');
 
-// USE
+/* USE */
 
+// make an instance of `express` called `app`
 const app = express();
-
 app.use(cors());
 
-// try the port variable in the .env, but try 3002 if it doesn't
-// if the server is running on 3002, then I know something is wrong in the .env file or how I'm importing the values
+// declare PORT using the .env file value, or port 3002
 const PORT = process.env.PORT || 3002;
 
 
-// the '/' means to start at the end of our 'base url'
+/* ROUTES */
+
+// base route
 app.get('/', (request, response) => {
   response.status(200).send('Meow-mix, Meow-mix, pls deliver!');
 });
 
-// from the /weather endpoint, get the key/value pairs from the search query
-// check the which city from the lat lon and searchQuery
-// make a new Forecast object for each day of weather data for that locations
-// put those Forecast objects into an array
-// send the full array of Forecast object back to the original client
-app.get('/weather', getWeather);
+// get weather data
+app.get('/weather', weatherHandler);
 
+// get movie data
+app.get('/movies', movies);
 
-// get movies data
-app.get('/movies', getMovies);
-
-// catch all| "star" route
-// the star is a wildcard that 'catches all' other routes
-// when a user enters an invalid route
+// star route
 app.get('*', (request, response) =>
 {
-  response.status(404).send('Something about Kansas');
+  response.status(404).send(`We're lost, aren't we?`);
 });
 
 
-// ERRORS
-// handle errors that I can define
-
-app.use((error, request, response) =>
+// event handlers
+function weatherHandler(request, response)
 {
-  console.log(error.message);
-  response.status(500).send(`You're fired, Mr. Squidward: `, error.message);
-});
+  // declare lat and lon from the query
+  const { lat, lon } = request.query;
 
+  // call the `weather` function from `weather.js` in modules folder
+  // 1. call the weather(lat, lon) function (promise)
+  // 2. then => respond to user with `summaries` object
+  //   - I'm not quite sure what this is, yet
+  // 3. and catch an error if pops up
+  //   - log the `error object
+  //   - respond with the 200 status code and a string
+  weather(lat, lon)
+    .then(summaries => response.send(summaries))
+    .catch((error) =>
+    {
+      console.error(error);
+      response.status(200).send('Sorry. Something went wrong!');
+    });
+}
 
 // LISTEN
-// start the server
-// express has a `listen` method that takes in a `PORT` and a callback function as arguments
-app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+// expecting the port to either be 3001 or the frontend url
+app.listen(PORT, () => console.log(`Listening on port: ${process.env.PORT}`));

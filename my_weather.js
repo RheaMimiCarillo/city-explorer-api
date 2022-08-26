@@ -77,6 +77,7 @@ async function getWeather (request, response, next)
 
 
 // get the date, 5 days from today
+// can use JavaScript Temporal, instead of the contrived method
 const getDate = daysFromToday =>
 {
   // got help here https://stackoverflow.com/a/20329800
