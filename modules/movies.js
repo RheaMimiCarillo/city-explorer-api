@@ -1,6 +1,7 @@
 // copy of my_movies.js for Lab 10
 
-onst axios = require('axios');
+const axios = require('axios');
+let cache = require('./cache.js');
 
 // CLASSES
 

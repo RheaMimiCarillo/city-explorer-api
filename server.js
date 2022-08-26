@@ -15,8 +15,11 @@ const cors = require('cors');
 // import weather functionality
 const weather = require('./modules/weather.js');
 
+/*
 // import movies functionality
-const movies = require('./movies.js');
+const movies = require('./modules/movies.js');
+*/
+
 
 /* USE */
 
@@ -38,8 +41,10 @@ app.get('/', (request, response) => {
 // get weather data
 app.get('/weather', weatherHandler);
 
+/*
 // get movie data
 app.get('/movies', movies);
+*/
 
 // star route
 app.get('*', (request, response) =>
