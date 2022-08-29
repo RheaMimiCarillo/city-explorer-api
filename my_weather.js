@@ -1,20 +1,5 @@
-const axios = require('axios');
+'use strict';
 
-
-// CLASSES
-
-// making Forecast objects from user input
-class Forecast
-{
-  constructor(weatherObj)
-  {
-    this.date = weatherObj.datetime;
-    this.description = weatherObj.weather.description;
-
-    // round temperature to nearest, whole number
-    this.maxTemp = Math.round(weatherObj.high_temp);
-  }
-}
 
 
 async function getWeather (request, response, next)
@@ -84,6 +69,20 @@ async function getWeather (request, response, next)
   }
 }
 
+// CLASSES
+
+// making Forecast objects from user input
+class Forecast
+{
+  constructor(weatherObj)
+  {
+    this.date = weatherObj.datetime;
+    this.description = weatherObj.weather.description;
+
+    // round temperature to nearest, whole number
+    this.maxTemp = Math.round(weatherObj.high_temp);
+  }
+}
 /*
 // get the date, 5 days from today
 // can use JavaScript Temporal, instead of the contrived method

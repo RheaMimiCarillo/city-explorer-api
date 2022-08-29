@@ -5,12 +5,16 @@ let cache = require('./cache.js');
 const axios = require('axios');
 
 
-function getWeather(latitude, longitude)
+async function getWeather(latitude, longitude)
 {
-  const key = 'weather-' + latitude + longitude;
-  const url = `http://api.weatherbit.io/v2.0/forecast/daily/?key=${WEATHER_API_KEY}&lang=en&lat=${lat}&lon=${lon}&days=5`;
+  let key = 'weather-' + latitude + longitude;
+  let url = `http://api.weatherbit.io/v2.0/forecast/daily/?key=${process.env.WEATHER_API_KEY}&lang=en&lat=${latitude}&lon=${longitude}&days=5&units=I`;
+
+  console.log('weatherbit URL: ', url);
+
 
   // check timestamp in cache to see if it's old and needs to be updated
+  // if the difference between the time now and the time in the timestamp is `less` than 50000 milliseconds
   if (cache[key] && (Date.now() - cache[key].timestamp < 50000))
   {
     // if the cache is up-to-date enough log 'Cache hit'
@@ -28,11 +32,12 @@ function getWeather(latitude, longitude)
     cache[key].timestamp = Date.now();
 
     // get weatherbit data using axios
-    // call `parseWeather` to get just the [data] from the axios response
-    cache[key].data = axios.get(url)
+    // call `parseWeather` to get an array of `Weather` objects
+    cache[key].data = await axios.get(url)
       .then(response => parseWeather(response.data));
   }
-  // return the weather-lat-lon.data: [] from the cache
+  //console.log('cache[key].data: ', cache[key].data);
+  // return the weather-lat-lon.data: [weatherSummaries] from the cache
   return cache[key].data;
 }
 
@@ -67,7 +72,7 @@ class Weather
 
 /*
 // get the date, 5 days from today
-// can use JavaScript Temporal, instead of the contrived method
+// can use JavaScript Temporal, instead of this contrived method
 const getDate = daysFromToday =>
 {
   // got help here https://stackoverflow.com/a/20329800

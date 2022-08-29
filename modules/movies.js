@@ -3,6 +3,67 @@
 const axios = require('axios');
 let cache = require('./cache.js');
 
+async function getMovies(cityName)
+{
+  //console.log('in movies.js');
+  //console.log('city from /movies request: ', cityName);
+  //console.log('movies cache key: ', key);
+  // make a `url` to use to make a GET request
+
+
+  let key = 'movie-' + cityName;
+
+  let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
+
+  console.log('movieUrl: ', url);
+
+  // movies cache expires every year
+  let timeToCache = 1000 * 60 * 24 * 365;
+
+  // console.log('timeToCache: ', timeToCache);
+  // console.log('Date.now(): ', Date.now());
+
+  // check timestamp in cache to see if it's old and needs to be updated
+  // if the difference between the time now and the time in the timestamp is `less` than a year in milliseconds
+  if (cache[key] && (Date.now() - cache[key].timestamp < timeToCache))
+  {
+    // if the cache is up-to-date enough log 'Cache hit'
+    console.log('Cache hit for Movies');
+  }
+  else
+  {
+    console.log('Cache miss for Movies');
+
+    cache[key] = {};
+
+    cache[key].timestamp = Date.now();
+
+    cache[key].data = await axios.get(url)
+      .then(response => parseMovies(response.data.results));
+
+  }
+  // console.log(`${cache[key]}.data: `, cache[key].data);
+
+  return cache[key].data;
+}
+
+let parseMovies = movieData =>
+{
+  try
+  {
+    const moviesArray = movieData.map(movie =>
+    {
+      return new Movies(movie);
+    });
+    return Promise.resolve(moviesArray);
+  }
+  catch (e)
+  {
+    // return rejected Promise with the Error object
+    return Promise.reject(e);
+  }
+};
+
 // CLASSES
 
 class Movies
@@ -17,48 +78,6 @@ class Movies
     this.src = movieData.poster_path ? `https://image.tmdb.org/t/p/w500${movieData.poster_path}` : '';
     this.score = movieData.vote_average;
     this.id= movieData.id;
-  }
-}
-
-async function getMovies(request,response,next)
-{
-  try
-  {
-    let cityName = request.query.city;
-    console.log('city from /movies request: ', cityName);
-
-    // make a `url` to use to make a GET request
-    let url = `https://api.themoviedb.org/3/search/movie?query=${cityName}&api_key=${process.env.MOVIE_API_KEY}&adult=false`;
-
-    console.log('movieUrl: ', url);
-
-    // use the `url` to do a GET from the weather api using axios
-    let movieResults = await axios.get(url);
-    console.log('raw api movie results: ', movieResults);
-
-
-    console.log('movieResults.results: ', movieResults.data.results);
-    // access the data from .results (axios) to get the raw data
-    // if the city has any movies with it's name in the title
-
-    // make an empty array to store potential Movie objects
-    let movieArray = [];
-    if (movieResults.data.results.length)
-    {
-      movieResults.data.results.forEach(movie => movieArray.push(new Movies(movie)));
-    }
-
-    console.log(movieArray);
-
-    response.status(200).send(movieArray);
-    // use a map loop or sm to make an array of Movie objects
-    // return the array of Movie objects
-  }
-  catch (error)
-  {
-    console.log('error message: ', error.message);
-    // response.send('You want movies?');
-    next(error);
   }
 }
 

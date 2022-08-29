@@ -2,30 +2,17 @@
 
 'use strict';
 
-
-// only exporting one object, so make this object have separate entries for weather and movies
-
-// maybe use .find() to find the object that has the weatherDate and movieDate object and seeing
-/*
+module.exports = {
+  /* what an entry might look like
   {
     'weather-' + latitude + longitude(key): {
       timestamp: 1234901283094,
       data: [
-        <weather-data form axios>
-      ]
-    },
-  }
-
-*/
-
-
-module.exports = {
-  /* what it might look like
-  {
-    <key 'weather-' + latitude + longitude>: {
-      timestamp: 1234901283094,
-      data: [
-        <weather-data from weatherbit>
+        {`Weather` object},
+        {`Weather` object},
+        {`Weather` object},
+        {`Weather` object},
+        {`Weather` object},
       ]
     },
   }
