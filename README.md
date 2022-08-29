@@ -128,11 +128,21 @@ Finish time: _____
 
 Actual time needed to complete: _____
 
-2. Refactor: Componentize the front-end codebase.
-
 Name of feature: 2. Refactor: Componentize the front-end codebase.
 
 Estimate of time needed to complete: 2 hours
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+### Lab 10
+
+Name of feature: Cache on Weather and Movies
+
+Estimate of time needed to complete: 4 hours
 
 Start time: _____
 

@@ -1,20 +1,5 @@
-const axios = require('axios');
+'use strict';
 
-
-// CLASSES
-
-// making Forecast objects from user input
-class Forecast
-{
-  constructor(weatherObj)
-  {
-    this.date = weatherObj.datetime;
-    this.description = weatherObj.weather.description;
-
-    // round temperature to nearest, whole number
-    this.maxTemp = Math.round(weatherObj.high_temp);
-  }
-}
 
 
 async function getWeather (request, response, next)
@@ -31,13 +16,16 @@ async function getWeather (request, response, next)
     // get longitude from search query
     let lon = request.query.lon;
 
+    /*
     // get today's date in YYYY-MM-DD format
     let currentDate = getDate(0);
 
     // get date 5 days from today in YYYY-MM-DD format
     let endDate = getDate(5);
-
     let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&lat=${lat}&lon=${lon}&start_date=${currentDate}&end_date=${endDate}`;
+    */
+
+    let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&lat=${lat}&lon=${lon}&days=5`;
 
     console.log('weatherbit url: ',url);
 
@@ -50,6 +38,7 @@ async function getWeather (request, response, next)
     console.log('just weatherObj raw data', weatherObj);
 
 
+    /*
     // turn weatherObj into an array of 5 Forecast objects
     let forecastArray = [];
     // get only the first 5 days of the forecast
@@ -60,6 +49,11 @@ async function getWeather (request, response, next)
       forecastArray.push(dailyForecast);
       console.log(`forecastArray ${i} loop`, forecastArray);
     }
+    */
+
+    // make an array of 5 Forecast objects
+    let forecastArray = weatherObj.data.map(dailyForecast => new Forecast(dailyForecast));
+
 
     console.log('forecastArray ', forecastArray);
 
@@ -75,7 +69,21 @@ async function getWeather (request, response, next)
   }
 }
 
+// CLASSES
 
+// making Forecast objects from user input
+class Forecast
+{
+  constructor(weatherObj)
+  {
+    this.date = weatherObj.datetime;
+    this.description = weatherObj.weather.description;
+
+    // round temperature to nearest, whole number
+    this.maxTemp = Math.round(weatherObj.high_temp);
+  }
+}
+/*
 // get the date, 5 days from today
 // can use JavaScript Temporal, instead of the contrived method
 const getDate = daysFromToday =>
@@ -99,7 +107,7 @@ const getDate = daysFromToday =>
 
   return `${year}-${month}-${day}`;
 };
-
+*/
 
 // syntax to export just a function
 module.exports = getWeather;
